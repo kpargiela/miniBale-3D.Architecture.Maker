@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <title>miniBale Creator</title>
+    <!-- Link to the last version of BabylonJS -->
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <!-- Link to the last version of BabylonJS loaders to enable loading filetypes such as .gltf -->
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylon.gridMaterial.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <!-- Link to pep.js to ensure pointer events work consistently in all browsers -->
+    <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+    <style>
+        html,
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            font-family: sans-serif;
+        }
+
+        #intro {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        #app {
+            display: none;
+        }
+
+        #renderCanvas {
+            display: none;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        .menu {
+            position: relative;
+        }
+
+        .toggle-menu {
+            position: absolute;
+            right: -80px;
+            top: 50%;
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: sans-serif;
+            border-top-right-radius: 25px;
+            border-bottom-right-radius: 25px;
+        }
+
+        .material {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .name {
+            text-align: center;
+        }
+
+        img {
+            width: 160px;
+        }
+
+        li {
+            list-style: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="intro">
+        <img class="logo" src="img/logo-minibale.jpeg" alt="">
+        <h1>Zaprojektuj własną makietę z systemem miniBale i zamów materiały do zbudowania jej w rzeczywistości!</h1>
+    </div>
+    <div id="app">
+        <div class="top-menu">
+            <span class="top-view">Top</span>
+        </div>
+        <div class="menu">
+            <div id="materials-menu">
+
+                <ul class="list-materials">
+                    <li class="material">
+                        <span class="name">Log</span>
+                        <img src="brick.png" alt="">
+                        <span class="name">Get info</span>
+                    </li>
+                </ul>
+            </div>
+            <span class="toggle-menu">Hide</span>
+        </div>
+    </div>
+    <canvas id="renderCanvas"></canvas>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+
+            var intro = document.querySelector('#intro');
+            var app = document.querySelector('#app');
+            var canvas = document.getElementById('renderCanvas');
+            var engine = new BABYLON.Engine(canvas, true);
+
+            function introHide() {
+                intro.style.display = 'none';
+                app.style.display = 'flex';
+                canvas.style.display = 'block';
+                engine.resize();
+            }
+            setTimeout(introHide, 1000);
+
+            var menu = document.querySelector('#materials-menu');
+            var toggleBtn = document.querySelector('.toggle-menu');
+
+            console.log(toggleBtn);
+
+            toggleBtn.addEventListener('click', function (e) {
+                if (menu.style.display === 'block') {
+                    menu.style.display = 'none';
+                    e.target.textContent = 'Show'
+                } else {
+                    menu.style.display = 'block';
+                    e.target.textContent = 'Hide';
+                }
+            });
+
+            var createScene = function () {
+                // Create a basic BJS Scene object.
+                var scene = new BABYLON.Scene(engine);
+
+                // Create a FreeCamera, and set its position to (x:0, y:5, z:-10).
+                var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 20, -10), scene);
+
+                var camera2 = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 40, 0), scene);
+
+                let cameraTopBtn = document.querySelector('.top-view');
+
+                // cameraTopBtn.addEventListener('click', function (e) {
+                //     camera = cameraTop;
+                //     console.log(camera);
+                // });
+
+                var switchCam = true;
+
+                cameraTopBtn.addEventListener("click", function (e) {
+                    if (switchCam) {
+                        scene.activeCamera = camera;
+                    } else {
+                        scene.activeCamera = camera2;
+                    }
+                    switchCam = !switchCam;
+                })
+
+                // Target the camera to scene origin.
+                camera.setTarget(BABYLON.Vector3.Zero());
+                camera2.setTarget(BABYLON.Vector3.Zero());
+
+
+                // Attach the camera to the canvas.
+                camera.attachControl(canvas, false);
+                camera2.attachControl(canvas, false);
+
+                // Create a basic light, aiming 0,1,0 - meaning, to the sky.
+                var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
+                light.specular = new BABYLON.Color3(0, 0, 0);
+
+                var brickMaterial = new BABYLON.StandardMaterial('brickMat', scene);
+                brickMaterial.diffuseColor = new BABYLON.Color3.FromInts(255, 102, 102);
+                brickMaterial.ambientColor = new BABYLON.Color3.FromInts(0, 0, 0);
+                brickMaterial.emissiveColor = new BABYLON.Color3.FromInts(255, 102, 102);
+                brickMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+
+                var wenge = new BABYLON.StandardMaterial("wenge", scene);
+
+                BABYLON.SceneLoader.ImportMesh("", "", "all.babylon", scene, function (meshes) {
+
+                    var mesh = meshes[0];
+
+                                    wenge.diffuse = new BABYLON.Color3(1, 1, 1);
+                // wenge.diffuseTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
+                wenge.specularTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
+                wenge.emissiveTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
+                wenge.ambientTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
+
+                    mesh.material = wenge;
+
+                    mesh.position.x = 2;
+
+
+                    var newInstance = mesh.clone();
+                    newInstance.position.x = mesh.position.x + 2;
+
+                    // var cubesArr = [];
+                    // var originalMesh = meshes[0];
+                    // if (cubesArr) {
+                    //     var newInstance = originalMesh.clone();
+                    //     newInstance.id = "cube" + (cubesArr.length + 1);
+                    //     cubesArr.push(newInstance);
+                    // }
+                    // originalMesh.position.x = 2;
+
+                    // var cubeMaterial = new BABYLON.StandardMaterial('cubeMat', scene);
+                    // cubeMaterial.diffuseColor = new BABYLON.Color3.FromInts(255, 102, 102);
+                    // cubeMaterial.ambientColor = new BABYLON.Color3.FromInts(0, 0, 0);
+
+                    // originalMesh.material = cubeMaterial;
+                    // console.log(cubesArr);
+                    // return cubesArr;
+
+
+
+                    // var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
+                    //     "UI");
+
+                    // var rotateBtn = BABYLON.GUI.Button.CreateImageOnlyButton("btn",
+                    //     "img/angle-up.png");
+                    // rotateBtn.width = '30px';
+                    // rotateBtn.height = "50px";
+                    // // rotateBtn.color = "white";
+                    // rotateBtn.background = "white";
+                    // advancedTexture.addControl(rotateBtn);
+                    // rotateBtn.linkWithMesh(mesh);
+                    // rotateBtn.linkOffsetY = -150;
+
+                    // var rotateDownBtn = BABYLON.GUI.Button.CreateSimpleButton("btn2", "Rotate Down");
+                    // rotateDownBtn.width = 0.06;
+                    // rotateDownBtn.height = "40px";
+                    // rotateDownBtn.color = "white";
+                    // rotateDownBtn.background = "gray";
+                    // advancedTexture.addControl(rotateDownBtn);
+                    // rotateDownBtn.linkWithMesh(mesh);
+                    // rotateDownBtn.linkOffsetY = -100;
+                });
+
+                var brick = BABYLON.MeshBuilder.CreateBox('brick', {
+                    height: .5,
+                    width: 2,
+                    depth: 1
+                }, scene);
+
+                brick.position.y = 0.1;
+
+                brick.material = brickMaterial;
+
+                console.log(brick.material);
+
+                var bricks = [];
+                bricks.push(brick);
+
+                brick.actionManager = new BABYLON.ActionManager(scene);
+
+                // brick.actionManager.registerAction(
+                //     new BABYLON.ExecuteCodeAction({
+                //             trigger: BABYLON.ActionManager.OnPickTrigger,
+                //             parameter: brick
+                //         },
+
+                //         function () {
+                //             var originalMesh = brick;
+                //             var bricksArray = bricks;
+                //             var lastBrick = bricksArray[bricksArray.length - 1];
+                //             // bricksArray.push(originalMesh);
+                //             if (bricksArray != '') {
+                //                 var newInstance = originalMesh.clone();
+                //                 newInstance.id = "brick" + ((bricksArray.length - 1) + 1);
+                //                 if (bricksArray.length <= 5) {
+                //                     newInstance.position.x = (lastBrick.position.x + 0.8);
+                //                 } else if ((bricksArray.length > 5) && (bricksArray.length <= 10)) {
+                //                     newInstance.position.z = (lastBrick.position.z + 0.4);
+                //                 } else {
+                //                     newInstance.position.y = (lastBrick.position.y + 0.2);
+                //                 }
+                //                 bricksArray.push(newInstance);
+                //             }
+                //             return bricksArray;
+                //         }
+                //     )
+                // );
+
+                //When pointer down event is raised
+                scene.onPointerDown = function (evt, pickResult) {
+                    // if the click hits the ground object, we change the impact position
+                    if (pickResult.hit) {
+                        brick.position.x = pickResult.pickedPoint.x;
+                        brick.position.y = pickResult.pickedPoint.y;
+                        brick.position.z = pickResult.pickedPoint.z;
+                    }
+                };
+
+                var wood = new BABYLON.StandardMaterial("wood", scene);
+
+                wood.diffuseTexture = new BABYLON.Texture("img/wood/wood3.png", scene);
+                wood.specularTexture = new BABYLON.Texture("img/wood/wood3.png", scene);
+                wood.emissiveTexture = new BABYLON.Texture("img/wood/wood3.png", scene);
+                wood.ambientTexture = new BABYLON.Texture("img/wood/wood3.png", scene);
+
+                var grid = new BABYLON.GridMaterial("grid", scene);
+                grid.mainColor = new BABYLON.Color3.FromInts(255, 255, 255);
+                grid.lineColor = new BABYLON.Color3.FromInts(204, 204, 204);
+                grid.majorUnitFrequency = 3;
+
+                // Create a built-in "ground" shape.
+                var ground = BABYLON.MeshBuilder.CreateGround('ground1', {
+                    height: 50,
+                    width: 50,
+                    subdivisions: 2
+                }, scene);
+
+                ground.material = wood;
+
+                scene.clearColor = new BABYLON.Color3.FromInts(135, 232, 255);
+
+                light.specularPower = 0;
+
+                // ground.material = new BABYLON.GridMaterial("groundMaterial", scene);
+
+                // Return the created scene.
+                return scene;
+            }
+            var scene = createScene();
+
+            engine.runRenderLoop(function () {
+                scene.render();
+            });
+
+            window.addEventListener('resize', function () {
+                engine.resize();
+            });
+        });
+    </script>
+</body>
+
+</html>
