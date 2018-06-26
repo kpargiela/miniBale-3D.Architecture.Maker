@@ -188,17 +188,25 @@
                 brickMaterial.emissiveColor = new BABYLON.Color3.FromInts(255, 102, 102);
                 brickMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
 
-                var wenge = new BABYLON.StandardMaterial("wenge", scene);
+                                    var wenge = new BABYLON.StandardMaterial("wenge", scene);
+
+
+// wenge.diffuseTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
+wenge.specularTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
+wenge.emissiveTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
+wenge.ambientTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
+
+wenge.diffuse = new BABYLON.Color3(1, 1, 1);
+// // wenge.ambient = new BABYLON.Color3(1, 1, 1);
+// wenge.specular = new BABYLON.Color3(1, 1, 1);
+// wenge.emissive = new BABYLON.Color3(1, 1, 1);
+// // wenge.ambient = new BABYLON.Color3(1, 1, 1);
+// wenge.ground = new BABYLON.Color3(1, 1, 1);
 
                 BABYLON.SceneLoader.ImportMesh("", "", "all.babylon", scene, function (meshes) {
 
                     var mesh = meshes[0];
 
-                                    wenge.diffuse = new BABYLON.Color3(1, 1, 1);
-                // wenge.diffuseTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
-                wenge.specularTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
-                wenge.emissiveTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
-                wenge.ambientTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
 
                     mesh.material = wenge;
 
@@ -251,16 +259,14 @@
                 });
 
                 var brick = BABYLON.MeshBuilder.CreateBox('brick', {
-                    height: .5,
-                    width: 2,
-                    depth: 1
+                    height: 2,
+                    width: 8,
+                    depth: 4
                 }, scene);
 
                 brick.position.y = 0.1;
 
-                brick.material = brickMaterial;
-
-                console.log(brick.material);
+                brick.material = wenge;
 
                 var bricks = [];
                 bricks.push(brick);
