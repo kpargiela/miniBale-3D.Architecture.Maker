@@ -181,12 +181,18 @@
                 // Create a basic light, aiming 0,1,0 - meaning, to the sky.
                 var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
                 light.specular = new BABYLON.Color3(0, 0, 0);
+                // light.diffuse = new BABYLON.Color3(0, 0, 0);
+                light.ambient = new BABYLON.Color3(1, 1, 1);
+                light.emissive = new BABYLON.Color3(1, 1, 1);
+
+                console.log(light);
 
                 var brickMaterial = new BABYLON.StandardMaterial('brickMat', scene);
                 brickMaterial.diffuseColor = new BABYLON.Color3.FromInts(255, 102, 102);
                 brickMaterial.ambientColor = new BABYLON.Color3.FromInts(0, 0, 0);
                 brickMaterial.emissiveColor = new BABYLON.Color3.FromInts(255, 102, 102);
-                brickMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+                // brickMaterial.specular = new BABYLON.Color3(0, 0, 0);
+                // brickMaterial.ground = new BABYLON.Color3(0, 0, 0);
 
                 var wenge = new BABYLON.StandardMaterial("wenge", scene);
 
@@ -214,7 +220,7 @@
 
 
                     var newInstance = mesh.clone();
-                    newInstance.position.x = mesh.position.x + 2;
+                    newInstance.position.x = mesh.position.x + 4;
 
                     // var cubesArr = [];
                     // var originalMesh = meshes[0];
