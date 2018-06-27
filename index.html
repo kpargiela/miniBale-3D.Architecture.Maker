@@ -4,6 +4,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
     <title>miniBale Creator</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
+        crossorigin="anonymous">
     <!-- Link to the last version of BabylonJS -->
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <!-- Link to the last version of BabylonJS loaders to enable loading filetypes such as .gltf -->
@@ -34,7 +36,12 @@
         }
 
         #app {
-            display: none;
+            display: flex;
+            position: absolute;
+            width: 100%;
+            height: 100px;
+            /* overflow: hidden; */
+            /* background: rgba(255,255,255, .8); */
         }
 
         #renderCanvas {
@@ -46,14 +53,18 @@
 
         .menu {
             position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
         }
 
         .toggle-menu {
             position: absolute;
-            right: -80px;
-            top: 50%;
-            width: 80px;
-            height: 80px;
+            right: 10px;
+            top: 10px;
+            width: 60px;
+            height: 40px;
             background: rgba(0, 0, 0, 0.3);
             display: flex;
             justify-content: center;
@@ -62,40 +73,59 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             font-family: sans-serif;
-            border-top-right-radius: 25px;
-            border-bottom-right-radius: 25px;
+            border-radius: 25px;
+        }
+
+        .materials-menu {
+            display: block;
+            width: 100%;
         }
 
         .list-materials {
+            margin: 0;
             padding: 0;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.6);
         }
 
         .material {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: rgba(0, 0, 255, 0.03);
+            flex-direction: row;
             color: rgba(0, 0, 0, 0.7);
-            border-radius: 50px;
             align-items: center;
-            align-content: center;
-            margin: 40px;
+            height: 100%;
+        }
+
+        .object-container {
+            width: 40%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        .mesh {
             position: relative;
-            padding: 20px;
+            display: flex;
+            width: 60px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            margin-right: 30px;
         }
 
         .number {
             position: absolute;
             top: 0;
-            right: 0;
+            right: -30%;
             background: #fff;
-            width: 30px;
-            height: 30px;
-            border: 1px solid;
+            width: 15px;
+            height: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
             border-radius: 50px;
+            padding: 2px;
         }
 
         .name {
@@ -110,6 +140,10 @@
             width: 160px;
             padding: 20px 0;
             transition: 0.4s all;
+        }
+
+        .material-img {
+            width: 100px;
         }
 
         .material-img:hover {
@@ -137,7 +171,55 @@
             margin-bottom: 10px;
         }
 
-        .rotate-btn {
+        .rotate {
+            display: flex;
+            flex-direction: column;
+            width: 10%;
+            text-align: center;
+            height: 100%;
+            text-transform: uppercase;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .texture {
+            display: flex;
+            width: 40%;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+            align-content: center;
+        }
+
+        .texture span {
+            height: 100%;
+            display: flex;
+            line-height: 40px;
+        }
+
+        .texture img {
+            height: 80px;
+            width: 100%;
+            padding: 0;
+        }
+
+        .horizontal,
+        .vertical {
+            height: 40px;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border-radius: 50px;
+        }
+
+        .vertical {
+            transform: rotate(90deg);
+        }
+
+        /*         .rotate-btn {
             font-style: normal;
             padding: 10px;
             line-height: 20px;
@@ -149,7 +231,7 @@
             display: flex;
             justify-content: space-around;
             flex-direction: row
-        }
+        } */
 
         li {
             list-style: none;
@@ -172,18 +254,24 @@
         </div>
         <div class="menu">
             <div id="materials-menu">
-
                 <ul class="list-materials">
                     <li class="material">
-                        <i class="number">1</i>
-                        <span class="name">Log</span>
-                        <img class="material-img" src="brick.png" alt="">
-                        <!-- <div class="row"> -->
-                        <!-- <span class="info">Get info</span> -->
-                        <span class="remove">Remove</span>
-                        <!-- </div> -->
-                        <i class="rotate-btn horizontal">Rotate horizontal</i>
-                        <i class="rotate-btn vertical">Rotate vertical</i>
+                        <div class="object-container">
+                            <div class="mesh">
+                                <span class="name">Log</span>
+                                <i class="number">1</i>
+                            </div>
+                            <img class="material-img" src="brick.png" alt="">
+                            <span class="remove">Remove</span>
+                        </div>
+                        <div class="rotate">
+                            <i class="fas fa-arrows-alt-v fa-lg rotate-btn horizontal"></i>
+                            <i class="fas fa-arrows-alt-v fa-lg rotate-btn vertical"></i>
+                        </div>
+                        <div class="texture">
+                            <span>Type of wood</span>
+                            <img src="img/wood/wenge.png" />
+                        </div>
                     </li>
                 </ul>
             </div>
