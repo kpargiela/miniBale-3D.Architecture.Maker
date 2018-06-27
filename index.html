@@ -197,25 +197,25 @@
 
         .price {
             display: flex;
-    width: 20%;
-    text-align: center;
-    justify-content: center;
-    height: 100%;
-    align-items: center;
-    flex-direction: column;
+            width: 20%;
+            text-align: center;
+            justify-content: center;
+            height: 100%;
+            align-items: center;
+            flex-direction: column;
         }
 
-.price span {
-    margin: 1%;
-}
+        .price span {
+            margin: 1%;
+        }
 
-.price .value {
-    background: #fff;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-style: italic;
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.2);
-}
+        .price .value {
+            background: #fff;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-style: italic;
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
+        }
 
         .wenge {
             width: 30%;
@@ -497,7 +497,7 @@
                         var lastMesh = meshArr[meshArr.length - 1];
                         var setNumber = document.querySelector('.number');
                         var newInstance = mesh.clone();
-            
+
                         if (meshArr.length === 1) {
                             newInstance.id = "mesh " + (meshArr.length + 1);
                             newInstance.position.x = lastMesh.position.x + 4;
@@ -650,6 +650,13 @@
                 wood.emissiveTexture = new BABYLON.Texture("img/wood/wood2.png", scene);
                 wood.ambientTexture = new BABYLON.Texture("img/wood/wood2.png", scene);
 
+                var lightWood = new BABYLON.StandardMaterial("lightWood", scene);
+
+                lightWood.diffuseTexture = new BABYLON.Texture("img/wood/lightWood.png", scene);
+                lightWood.specularTexture = new BABYLON.Texture("img/wood/lightWood.png", scene);
+                lightWood.emissiveTexture = new BABYLON.Texture("img/wood/lightWood.png", scene);
+                lightWood.ambientTexture = new BABYLON.Texture("img/wood/lightWood.png", scene);
+
                 // var grid = new BABYLON.GridMaterial("grid", scene);
                 // grid.mainColor = new BABYLON.Color3.FromInts(255, 255, 255);
                 // grid.lineColor = new BABYLON.Color3.FromInts(204, 204, 204);
@@ -662,7 +669,7 @@
                     subdivisions: 2
                 }, scene);
 
-                ground.material = wood;
+                ground.material = lightWood;
 
                 scene.clearColor = new BABYLON.Color3.FromInts(200, 232, 255);
 
@@ -671,6 +678,80 @@
                 // ground.material = new BABYLON.GridMaterial("groundMaterial", scene);
 
                 // Return the created scene.
+
+
+                var startingPoint;
+                var currentMesh;
+
+                var getGroundPosition = function () {
+                    // Use a predicate to get position on the ground
+                    var pickinfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) {
+                        return mesh == ground;
+                    });
+                    if (pickinfo.hit) {
+                        return pickinfo.pickedPoint;
+                    }
+
+                    return null;
+                }
+
+                var onPointerDown = function (evt) {
+                    if (evt.button !== 0) {
+                        return;
+                    }
+
+                    // check if we are under a mesh
+                    var pickInfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) {
+                        return mesh !== ground;
+                    });
+                    if (pickInfo.hit) {
+                        currentMesh = pickInfo.pickedMesh;
+                        startingPoint = getGroundPosition(evt);
+
+                        if (startingPoint) { // we need to disconnect camera from canvas
+                            setTimeout(function () {
+                                camera.detachControl(canvas);
+                            }, 0);
+                        }
+                    }
+                }
+
+                var onPointerUp = function () {
+                    if (startingPoint) {
+                        camera.attachControl(canvas, true);
+                        startingPoint = null;
+                        return;
+                    }
+                }
+
+                var onPointerMove = function (evt) {
+                    if (!startingPoint) {
+                        return;
+                    }
+
+                    var current = getGroundPosition(evt);
+
+                    if (!current) {
+                        return;
+                    }
+
+                    var diff = current.subtract(startingPoint);
+                    currentMesh.position.addInPlace(diff);
+
+                    startingPoint = current;
+
+                }
+
+                canvas.addEventListener("pointerdown", onPointerDown, false);
+                canvas.addEventListener("pointerup", onPointerUp, false);
+                canvas.addEventListener("pointermove", onPointerMove, false);
+
+                scene.onDispose = function () {
+                    canvas.removeEventListener("pointerdown", onPointerDown);
+                    canvas.removeEventListener("pointerup", onPointerUp);
+                    canvas.removeEventListener("pointermove", onPointerMove);
+                }
+
                 return scene;
             }
             var scene = createScene();
