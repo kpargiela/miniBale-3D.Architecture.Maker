@@ -84,6 +84,20 @@
             padding: 20px;
         }
 
+        .number {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #fff;
+            width: 30px;
+            height: 30px;
+            border: 1px solid;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50px;
+        }
+
         .name {
             text-align: center;
             text-transform: uppercase;
@@ -161,11 +175,12 @@
 
                 <ul class="list-materials">
                     <li class="material">
+                        <i class="number">1</i>
                         <span class="name">Log</span>
                         <img class="material-img" src="brick.png" alt="">
                         <!-- <div class="row"> -->
-                            <!-- <span class="info">Get info</span> -->
-                            <span class="remove">Remove</span>
+                        <!-- <span class="info">Get info</span> -->
+                        <span class="remove">Remove</span>
                         <!-- </div> -->
                         <i class="rotate-btn horizontal">Rotate horizontal</i>
                         <i class="rotate-btn vertical">Rotate vertical</i>
@@ -284,27 +299,33 @@
                     var mesh = meshes[0];
                     meshArr[0] = mesh;
 
+                    var setNumber = document.querySelector('.number');
+                    console.log(setNumber);
+
                     var getElement = document.querySelector('.material-img');
                     var removeElement = document.querySelector('.remove');
 
                     mesh.id = "mesh";
 
                     mesh.material = brickMaterial;
-                    mesh.position.y = 10;
-                    mesh.position.z = -10;
+                    mesh.position.y = 4;
+                    mesh.position.z = 10;
 
                     getElement.addEventListener('click', function (e) {
                         var lastMesh = meshArr[meshArr.length - 1];
+                        var setNumber = document.querySelector('.number');
                         var newInstance = mesh.clone();
                         if (meshArr.length === 1) {
                             newInstance.id = "mesh " + (meshArr.length + 1);
                             newInstance.position.x = lastMesh.position.x + 4;
                             meshArr.push(newInstance);
+                            setNumber.textContent = (meshArr.length).toString();
                             console.log(meshArr);
                         } else {
                             newInstance.id = "mesh " + (meshArr.length + 1);
                             newInstance.position.x = lastMesh.position.x + 4;
                             meshArr.push(newInstance);
+                            setNumber.textContent = (meshArr.length).toString();
                             console.log(meshArr);
                         }
                         // return meshArr;
@@ -315,6 +336,7 @@
                         if (meshArr.length > 1) {
                             lastMesh.dispose();
                             meshArr.splice(-1, 1);
+                            setNumber.textContent = (meshArr.length).toString();
                         }
                     });
 
@@ -334,7 +356,7 @@
                         }
                     });
 
-// var newMesh = BABYLON.Mesh.MergeMeshes([meshArr[i]]);
+                    // var newMesh = BABYLON.Mesh.MergeMeshes([meshArr[i]]);
 
                     // var cubesArr = [];
                     // var originalMesh = meshes[0];
@@ -389,7 +411,6 @@
                 }, scene);
 
                 brick.position.y = 0.1;
-                brick.position.x = 4;
 
                 brick.material = wenge;
 
