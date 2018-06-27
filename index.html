@@ -66,22 +66,83 @@
             border-bottom-right-radius: 25px;
         }
 
+        .list-materials {
+            padding: 0;
+        }
+
         .material {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            background: rgba(0, 0, 255, 0.03);
+            color: rgba(0, 0, 0, 0.7);
+            border-radius: 50px;
+            align-items: center;
+            align-content: center;
+            margin: 40px;
+            position: relative;
+            padding: 20px;
         }
 
         .name {
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.5em;
+            color: rgba(0, 155, 255, 0.5);
         }
 
         img {
             width: 160px;
+            padding: 20px 0;
+            transition: 0.4s all;
+        }
+
+        .material-img:hover {
+            transform: scale(1.2);
+        }
+
+        .info {
+            background: #fff;
+            color: rgba(0, 155, 255, 0.5);
+            text-transform: uppercase;
+            font-size: 0.8em;
+            padding: 10px;
+            border-radius: 25px;
+            border: 2px solid rgba(0, 155, 255, 0.5);
+        }
+
+        .remove {
+            background: #fff;
+            color: red;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            padding: 10px;
+            border-radius: 25px;
+            border: 2px solid red;
+            margin-bottom: 10px;
+        }
+
+        .rotate-btn {
+            font-style: normal;
+            padding: 10px;
+            line-height: 20px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-around;
+            flex-direction: row
         }
 
         li {
             list-style: none;
+        }
+
+        .top-menu {
+            display: none;
         }
     </style>
 </head>
@@ -101,8 +162,13 @@
                 <ul class="list-materials">
                     <li class="material">
                         <span class="name">Log</span>
-                        <img src="brick.png" alt="">
-                        <span class="name">Get info</span>
+                        <img class="material-img" src="brick.png" alt="">
+                        <!-- <div class="row"> -->
+                            <!-- <span class="info">Get info</span> -->
+                            <span class="remove">Remove</span>
+                        <!-- </div> -->
+                        <i class="rotate-btn horizontal">Rotate horizontal</i>
+                        <i class="rotate-btn vertical">Rotate vertical</i>
                     </li>
                 </ul>
             </div>
@@ -147,7 +213,9 @@
                 var scene = new BABYLON.Scene(engine);
 
                 // Create a FreeCamera, and set its position to (x:0, y:5, z:-10).
-                var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 20, -10), scene);
+                var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 30, -30), scene);
+
+                console.log(camera);
 
                 var camera2 = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 40, 0), scene);
 
@@ -209,18 +277,64 @@
                 // // wenge.ambient = new BABYLON.Color3(1, 1, 1);
                 // wenge.ground = new BABYLON.Color3(1, 1, 1);
 
+                var meshArr = [];
+
                 BABYLON.SceneLoader.ImportMesh("", "", "all.babylon", scene, function (meshes) {
 
                     var mesh = meshes[0];
+                    meshArr[0] = mesh;
 
+                    var getElement = document.querySelector('.material-img');
+                    var removeElement = document.querySelector('.remove');
+
+                    mesh.id = "mesh";
 
                     mesh.material = brickMaterial;
+                    mesh.position.y = 10;
+                    mesh.position.z = -10;
 
-                    mesh.position.x = 2;
+                    getElement.addEventListener('click', function (e) {
+                        var lastMesh = meshArr[meshArr.length - 1];
+                        var newInstance = mesh.clone();
+                        if (meshArr.length === 1) {
+                            newInstance.id = "mesh " + (meshArr.length + 1);
+                            newInstance.position.x = lastMesh.position.x + 4;
+                            meshArr.push(newInstance);
+                            console.log(meshArr);
+                        } else {
+                            newInstance.id = "mesh " + (meshArr.length + 1);
+                            newInstance.position.x = lastMesh.position.x + 4;
+                            meshArr.push(newInstance);
+                            console.log(meshArr);
+                        }
+                        // return meshArr;
+                    });
 
+                    removeElement.addEventListener('click', function (e) {
+                        var lastMesh = meshArr[meshArr.length - 1];
+                        if (meshArr.length > 1) {
+                            lastMesh.dispose();
+                            meshArr.splice(-1, 1);
+                        }
+                    });
 
-                    var newInstance = mesh.clone();
-                    newInstance.position.x = mesh.position.x + 4;
+                    var rotateX = document.querySelector('.horizontal');
+
+                    rotateX.addEventListener('click', function (e) {
+                        for (var i = 0; i < meshArr.length; i++) {
+                            meshArr[i].rotate(BABYLON.Axis.X, Math.PI / 2, BABYLON.Space.WORLD);
+                        }
+                    });
+
+                    var rotateZ = document.querySelector('.vertical');
+
+                    rotateZ.addEventListener('click', function (e) {
+                        for (var i = 0; i < meshArr.length; i++) {
+                            meshArr[i].rotate(BABYLON.Axis.Z, Math.PI / 2, BABYLON.Space.WORLD);
+                        }
+                    });
+
+// var newMesh = BABYLON.Mesh.MergeMeshes([meshArr[i]]);
 
                     // var cubesArr = [];
                     // var originalMesh = meshes[0];
@@ -264,6 +378,10 @@
                     // rotateDownBtn.linkOffsetY = -100;
                 });
 
+
+
+
+
                 var brick = BABYLON.MeshBuilder.CreateBox('brick', {
                     height: 2,
                     width: 8,
@@ -271,13 +389,14 @@
                 }, scene);
 
                 brick.position.y = 0.1;
+                brick.position.x = 4;
 
                 brick.material = wenge;
 
                 var bricks = [];
                 bricks.push(brick);
 
-                brick.actionManager = new BABYLON.ActionManager(scene);
+                // brick.actionManager = new BABYLON.ActionManager(scene);
 
                 // brick.actionManager.registerAction(
                 //     new BABYLON.ExecuteCodeAction({
@@ -307,15 +426,15 @@
                 //     )
                 // );
 
-                //When pointer down event is raised
-                scene.onPointerDown = function (evt, pickResult) {
-                    // if the click hits the ground object, we change the impact position
-                    if (pickResult.hit) {
-                        brick.position.x = pickResult.pickedPoint.x;
-                        brick.position.y = pickResult.pickedPoint.y;
-                        brick.position.z = pickResult.pickedPoint.z;
-                    }
-                };
+                // //When pointer down event is raised
+                // scene.onPointerDown = function (evt, pickResult) {
+                //     // if the click hits the ground object, we change the impact position
+                //     if (pickResult.hit) {
+                //         brick.position.x = pickResult.pickedPoint.x;
+                //         brick.position.y = pickResult.pickedPoint.y;
+                //         brick.position.z = pickResult.pickedPoint.z;
+                //     }
+                // };
 
                 var wood = new BABYLON.StandardMaterial("wood", scene);
 
@@ -338,7 +457,7 @@
 
                 ground.material = wood;
 
-                scene.clearColor = new BABYLON.Color3.FromInts(135, 232, 255);
+                scene.clearColor = new BABYLON.Color3.FromInts(200, 232, 255);
 
                 light.specularPower = 0;
 
