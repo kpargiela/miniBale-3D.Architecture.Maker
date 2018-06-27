@@ -76,7 +76,7 @@
             border-radius: 25px;
         }
 
-        .materials-menu {
+        #materials-menu {
             display: block;
             width: 100%;
         }
@@ -259,7 +259,7 @@
                         <div class="object-container">
                             <div class="mesh">
                                 <span class="name">Log</span>
-                                <i class="number">1</i>
+                                <i class="number">4</i>
                             </div>
                             <img class="material-img" src="brick.png" alt="">
                             <span class="remove">Remove</span>
@@ -269,8 +269,47 @@
                             <i class="fas fa-arrows-alt-v fa-lg rotate-btn vertical"></i>
                         </div>
                         <div class="texture">
-                            <span>Type of wood</span>
-                            <img src="img/wood/wenge.png" />
+                            <span class="type">Type of wood</span>
+
+                        </div>
+                        <div class="textures" style="
+    width: 100%;
+    position: absolute;
+    display:  none;
+    height: auto;
+    bottom: -200%;
+    flex-direction: column;
+">
+                            <div class="tex" style="
+    display:  flex;
+    height: 100px;
+">
+                                <span style="
+    width: 20%;
+    text-align:  center;
+    align-self:  center;
+">Wenge (dark)</span>
+                                <img src="img/wood/wenge2.png" style="
+    width: 80%;
+    height: 100%;
+    padding: 0;
+">
+                            </div>
+                            <div class="tex" style="
+    display:  flex;
+    height: 100px;
+">
+                                <span style="
+    width: 20%;
+    text-align:  center;
+    align-self:  center;
+">Wenge (light)</span>
+                                <img src="img/wood/wenge.png" style="
+    width: 80%;
+    height: 100%;
+    padding: 0;
+">
+                            </div>
                         </div>
                     </li>
                 </ul>
@@ -299,8 +338,6 @@
             var menu = document.querySelector('#materials-menu');
             var toggleBtn = document.querySelector('.toggle-menu');
 
-            console.log(toggleBtn);
-
             toggleBtn.addEventListener('click', function (e) {
                 if (menu.style.display === 'block') {
                     menu.style.display = 'none';
@@ -308,6 +345,17 @@
                 } else {
                     menu.style.display = 'block';
                     e.target.textContent = 'Hide';
+                }
+            });
+
+            var toggleTypeOfWood = document.querySelector('.type');
+            var woodTypes = document.querySelector('.textures');
+
+            toggleTypeOfWood.addEventListener('click', function (e) {
+                if (woodTypes.style.display === 'flex') {
+                    woodTypes.style.display = 'none';
+                } else {
+                    woodTypes.style.display = 'flex';
                 }
             });
 
