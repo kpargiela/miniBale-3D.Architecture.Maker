@@ -217,7 +217,7 @@
             box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
         }
 
-        .wenge {
+        .wood {
             width: 30%;
             text-align: center;
             align-self: center;
@@ -333,13 +333,13 @@
 
                         </div>
                         <div class="textures">
-                            <div class="wood-type">
-                                <span class="wenge">WENGE dark</span>
-                                <img src="img/wood/wenge2.png">
+                            <div class="wood-type oak">
+                                <span class="wood">Oak</span>
+                                <img src="img/wood/oak_preview.png">
                             </div>
-                            <div class="wood-type">
-                                <span class="wenge">WENGE light</span>
-                                <img src="img/wood/wenge.png">
+                            <div class="wood-type wenge">
+                                <span class="wood">Wenge</span>
+                                <img src="img/wood/wenge-dark_preview.png">
                             </div>
                         </div>
                         <div class="price">
@@ -453,24 +453,40 @@
                 console.log(light);
 
                 var brickMaterial = new BABYLON.StandardMaterial('brickMat', scene);
-                brickMaterial.diffuseColor = new BABYLON.Color3.FromInts(255, 102, 102);
-                brickMaterial.ambientColor = new BABYLON.Color3.FromInts(0, 0, 0);
-                brickMaterial.emissiveColor = new BABYLON.Color3.FromInts(255, 102, 102);
+                // brickMaterial.diffuseColor = new BABYLON.Color3.FromInts(255, 102, 102);
+                // brickMaterial.ambientColor = new BABYLON.Color3.FromInts(0, 0, 0);
+                // brickMaterial.emissiveColor = new BABYLON.Color3.FromInts(255, 102, 102);
                 // brickMaterial.specular = new BABYLON.Color3(0, 0, 0);
                 // brickMaterial.ground = new BABYLON.Color3(0, 0, 0);
+
+                // brickMaterial.specularTexture = new BABYLON.Texture("img/brick.jpg", scene);
+                // brickMaterial.emissiveTexture = new BABYLON.Texture("img/brick.jpg", scene);
+                // brickMaterial.ambientTexture = new BABYLON.Texture("img/brick.jpg", scene);
+                brickMaterial.diffuseTexture = new BABYLON.Texture("img/brick.jpg", scene);
+
+
+                var oak = new BABYLON.StandardMaterial("oak", scene);
+
+                // wenge.diffuseTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
+                oak.specularTexture = new BABYLON.Texture("img/wood/oak_texture.png", scene);
+                oak.emissiveTexture = new BABYLON.Texture("img/wood/oak_texture.png", scene);
+                oak.ambientTexture = new BABYLON.Texture("img/wood/oak_texture.png", scene);
+
+                oak.diffuse = new BABYLON.Color3(1, 1, 1);
 
                 var wenge = new BABYLON.StandardMaterial("wenge", scene);
 
 
                 // wenge.diffuseTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
-                wenge.specularTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
-                wenge.emissiveTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
-                wenge.ambientTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
+                wenge.specularTexture = new BABYLON.Texture("img/wood/wenge-dark_texture.png", scene);
+                wenge.emissiveTexture = new BABYLON.Texture("img/wood/wenge-dark_texture.png", scene);
+                wenge.ambientTexture = new BABYLON.Texture("img/wood/wenge-dark_texture.png", scene);
 
                 wenge.diffuse = new BABYLON.Color3(1, 1, 1);
-                // // wenge.ambient = new BABYLON.Color3(1, 1, 1);
-                // wenge.specular = new BABYLON.Color3(1, 1, 1);
-                // wenge.emissive = new BABYLON.Color3(1, 1, 1);
+
+                wenge.ambient = new BABYLON.Color3(1, 1, 1);
+                wenge.specular = new BABYLON.Color3(1, 1, 1);
+                wenge.emissive = new BABYLON.Color3(1, 1, 1);
                 // // wenge.ambient = new BABYLON.Color3(1, 1, 1);
                 // wenge.ground = new BABYLON.Color3(1, 1, 1);
 
@@ -489,7 +505,7 @@
 
                     mesh.id = "mesh";
 
-                    mesh.material = brickMaterial;
+                    mesh.material = wenge;
                     mesh.position.y = 4;
                     mesh.position.z = 10;
 
@@ -500,14 +516,14 @@
 
                         if (meshArr.length === 1) {
                             newInstance.id = "mesh " + (meshArr.length + 1);
-                            newInstance.position.x = lastMesh.position.x + 4;
+                            newInstance.position.x = lastMesh.position.x + 2;
                             meshArr.push(newInstance);
                             setNumber.textContent = (meshArr.length).toString();
                             priceValue.textContent = meshArr.length + ' zł';
                             console.log(meshArr);
                         } else {
                             newInstance.id = "mesh " + (meshArr.length + 1);
-                            newInstance.position.x = lastMesh.position.x + 4;
+                            newInstance.position.x = lastMesh.position.x + 2;
                             meshArr.push(newInstance);
                             setNumber.textContent = (meshArr.length).toString();
                             priceValue.textContent = meshArr.length + ' zł';
@@ -523,6 +539,20 @@
                             meshArr.splice(-1, 1);
                             setNumber.textContent = (meshArr.length).toString();
                             priceValue.textContent = meshArr.length + ' zł';
+                        }
+                    });
+
+                    var pickOak = document.querySelector('.oak img')
+                    pickOak.addEventListener('click', function (e) {
+                        for (var i = 0; i < meshArr.length; i++) {
+                            meshArr[i].material = oak;
+                        }
+                    });
+
+                    var pickWenge = document.querySelector('.wenge img')
+                    pickWenge.addEventListener('click', function (e) {
+                        for (var i = 0; i < meshArr.length; i++) {
+                            meshArr[i].material = wenge;
                         }
                     });
 
@@ -591,14 +621,14 @@
 
 
                 var brick = BABYLON.MeshBuilder.CreateBox('brick', {
-                    height: 2,
-                    width: 8,
-                    depth: 4
+                    height: 0.5,
+                    width: 2,
+                    depth: 1
                 }, scene);
 
                 brick.position.y = 0.1;
 
-                brick.material = wenge;
+                brick.material = brickMaterial;
 
                 var bricks = [];
                 bricks.push(brick);
@@ -669,7 +699,7 @@
                     subdivisions: 2
                 }, scene);
 
-                ground.material = lightWood;
+                ground.material = wood;
 
                 scene.clearColor = new BABYLON.Color3.FromInts(200, 232, 255);
 
