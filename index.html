@@ -25,6 +25,7 @@
             padding: 0;
             display: flex;
             font-family: sans-serif;
+            outline-style: none;
         }
 
         #intro {
@@ -274,6 +275,7 @@
             width: 70%;
             height: 100%;
             padding: 0;
+            filter: brightness(1.2);
         }
 
         .horizontal,
@@ -297,6 +299,23 @@
 
         .top-menu {
             display: none;
+        }
+
+        .lang {
+            background: none;
+            height: 32px;
+            width: 32px;
+            border: none;
+            filter: brightness(1.2);
+            outline-style: none;
+        }
+
+        .lang.pl {
+            background-image: url(img/poland.png);
+        }
+
+        .lang.en {
+            background-image: url(img/united-states.png);
         }
     </style>
 </head>
@@ -341,11 +360,16 @@
                                 <span class="wood">Wenge</span>
                                 <img src="img/wood/wenge-dark_preview.png">
                             </div>
+                            <div class="wood-type courbaril">
+                                <span class="wood">Courbaril</span>
+                                <img src="img/wood/courbaril_preview.png">
+                            </div>
                         </div>
                         <div class="price">
                             <span>Price</span>
                             <span class="value">1 zł</span>
                         </div>
+                        <button class="lang pl"></button>
                     </li>
                 </ul>
             </div>
@@ -371,6 +395,36 @@
             engine.resize();
             // }
             // setTimeout(introHide, 1000);
+
+            var switchLangBtn = document.querySelector('.lang');
+            materialName = document.querySelector('.name'),
+                typeOfWood = document.querySelector('.type'),
+                oakWood = document.querySelector('.oak span');
+            courbarilWood = document.querySelector('.courbaril span');
+            price = document.querySelector('.price span:first-of-type');
+
+            switchLangBtn.addEventListener('click', function (e) {
+                if (switchLangBtn.classList.contains('pl')) {
+                    materialName.textContent = "Bal";
+                    typeOfWood.textContent = "Gatunek drewna";
+                    oakWood.textContent = "Dąb";
+                    courbarilWood.textContent = "Jatoba";
+                    price.textContent = "Cena";
+                    switchLangBtn.classList.remove('pl');
+                    switchLangBtn.classList.add('en');
+
+                } else {
+                    switchLangBtn.classList.remove('en');
+                    switchLangBtn.classList.add('pl');
+                    materialName.textContent = "Block";
+                    typeOfWood.textContent = "Type of wood";
+                    oakWood.textContent = "Oak";
+                    courbarilWood.textContent = "Courbaril";
+                    price.textContent = "Price";
+                }
+            });
+
+
 
             var menu = document.querySelector('#materials-menu');
             var toggleBtn = document.querySelector('.toggle-menu');
@@ -410,7 +464,7 @@
                 var scene = new BABYLON.Scene(engine);
 
                 // Create a FreeCamera, and set its position to (x:0, y:5, z:-10).
-                var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 30, -30), scene);
+                var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 20, -30), scene);
 
                 console.log(camera);
 
@@ -464,26 +518,24 @@
                 // brickMaterial.ambientTexture = new BABYLON.Texture("img/brick.jpg", scene);
                 brickMaterial.diffuseTexture = new BABYLON.Texture("img/brick.jpg", scene);
 
+                var courbaril = new BABYLON.StandardMaterial("courbaril", scene);
+                courbaril.specularTexture = new BABYLON.Texture("img/wood/courbaril_texture.png", scene);
+                courbaril.emissiveTexture = new BABYLON.Texture("img/wood/courbaril_texture.png", scene);
+                courbaril.ambientTexture = new BABYLON.Texture("img/wood/courbaril_texture.png", scene);
+                courbaril.diffuse = new BABYLON.Color3(1, 1, 1);
 
                 var oak = new BABYLON.StandardMaterial("oak", scene);
-
-                // wenge.diffuseTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
-                oak.specularTexture = new BABYLON.Texture("img/wood/oak_texture.png", scene);
-                oak.emissiveTexture = new BABYLON.Texture("img/wood/oak_texture.png", scene);
-                oak.ambientTexture = new BABYLON.Texture("img/wood/oak_texture.png", scene);
-
+                oak.specularTexture = new BABYLON.Texture("img/wood/oak_texture2.png", scene);
+                oak.emissiveTexture = new BABYLON.Texture("img/wood/oak_texture2.png", scene);
+                oak.ambientTexture = new BABYLON.Texture("img/wood/oak_texture2.png", scene);
                 oak.diffuse = new BABYLON.Color3(1, 1, 1);
 
                 var wenge = new BABYLON.StandardMaterial("wenge", scene);
-
-
                 // wenge.diffuseTexture = new BABYLON.Texture("img/wood/wenge2.png", scene);
                 wenge.specularTexture = new BABYLON.Texture("img/wood/wenge-dark_texture.png", scene);
                 wenge.emissiveTexture = new BABYLON.Texture("img/wood/wenge-dark_texture.png", scene);
                 wenge.ambientTexture = new BABYLON.Texture("img/wood/wenge-dark_texture.png", scene);
-
                 wenge.diffuse = new BABYLON.Color3(1, 1, 1);
-
                 wenge.ambient = new BABYLON.Color3(1, 1, 1);
                 wenge.specular = new BABYLON.Color3(1, 1, 1);
                 wenge.emissive = new BABYLON.Color3(1, 1, 1);
@@ -492,7 +544,7 @@
 
                 var meshArr = [];
 
-                BABYLON.SceneLoader.ImportMesh("", "", "all.babylon", scene, function (meshes) {
+                BABYLON.SceneLoader.ImportMesh("", "", "cube3.babylon", scene, function (meshes) {
 
                     var mesh = meshes[0];
                     meshArr[0] = mesh;
@@ -506,8 +558,8 @@
                     mesh.id = "mesh";
 
                     mesh.material = wenge;
-                    mesh.position.y = 4;
-                    mesh.position.z = 10;
+                    mesh.position.y = 1;
+                    mesh.position.z = -6;
 
                     getElement.addEventListener('click', function (e) {
                         var lastMesh = meshArr[meshArr.length - 1];
@@ -516,14 +568,14 @@
 
                         if (meshArr.length === 1) {
                             newInstance.id = "mesh " + (meshArr.length + 1);
-                            newInstance.position.x = lastMesh.position.x + 2;
+                            newInstance.position.x = lastMesh.position.x + 1.36;
                             meshArr.push(newInstance);
                             setNumber.textContent = (meshArr.length).toString();
                             priceValue.textContent = meshArr.length + ' zł';
                             console.log(meshArr);
                         } else {
                             newInstance.id = "mesh " + (meshArr.length + 1);
-                            newInstance.position.x = lastMesh.position.x + 2;
+                            newInstance.position.x = lastMesh.position.x + 1.36;
                             meshArr.push(newInstance);
                             setNumber.textContent = (meshArr.length).toString();
                             priceValue.textContent = meshArr.length + ' zł';
@@ -553,6 +605,13 @@
                     pickWenge.addEventListener('click', function (e) {
                         for (var i = 0; i < meshArr.length; i++) {
                             meshArr[i].material = wenge;
+                        }
+                    });
+
+                    var pickCourbaril = document.querySelector('.courbaril img')
+                    pickCourbaril.addEventListener('click', function (e) {
+                        for (var i = 0; i < meshArr.length; i++) {
+                            meshArr[i].material = courbaril;
                         }
                     });
 
@@ -621,12 +680,12 @@
 
 
                 var brick = BABYLON.MeshBuilder.CreateBox('brick', {
-                    height: 0.5,
-                    width: 2,
+                    height: 1,
+                    width: 1,
                     depth: 1
                 }, scene);
 
-                brick.position.y = 0.1;
+                brick.position.y = 1;
 
                 brick.material = brickMaterial;
 
@@ -687,6 +746,21 @@
                 lightWood.emissiveTexture = new BABYLON.Texture("img/wood/lightWood.png", scene);
                 lightWood.ambientTexture = new BABYLON.Texture("img/wood/lightWood.png", scene);
 
+                var concrete = new BABYLON.StandardMaterial("concrete", scene);
+
+                concrete.diffuseTexture = new BABYLON.Texture("img/concrete.png", scene);
+                concrete.specularTexture = new BABYLON.Texture("img/concrete.png", scene);
+                concrete.emissiveTexture = new BABYLON.Texture("img/concrete.png", scene);
+                concrete.ambientTexture = new BABYLON.Texture("img/concrete.png", scene);
+                concrete.diffuseTexture.uScale = 3;
+                concrete.diffuseTexture.vScale = 3;
+                concrete.specularTexture.uScale = 3;
+                concrete.specularTexture.vScale = 3;
+                concrete.emissiveTexture.uScale = 3;
+                concrete.emissiveTexture.vScale = 3;
+                concrete.ambientTexture.uScale = 3;
+                concrete.ambientTexture.vScale = 3;
+
                 // var grid = new BABYLON.GridMaterial("grid", scene);
                 // grid.mainColor = new BABYLON.Color3.FromInts(255, 255, 255);
                 // grid.lineColor = new BABYLON.Color3.FromInts(204, 204, 204);
@@ -694,12 +768,12 @@
 
                 // Create a built-in "ground" shape.
                 var ground = BABYLON.MeshBuilder.CreateGround('ground1', {
-                    height: 50,
-                    width: 50,
+                    height: 20,
+                    width: 20,
                     subdivisions: 2
                 }, scene);
 
-                ground.material = wood;
+                ground.material = concrete;
 
                 scene.clearColor = new BABYLON.Color3.FromInts(200, 232, 255);
 
