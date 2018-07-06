@@ -1,0 +1,309 @@
+html,
+body {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    font-family: sans-serif;
+    outline-style: none;
+}
+
+#intro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+#app {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 80px;
+    /* overflow: hidden; */
+    /* background: rgba(255,255,255, .8); */
+}
+
+#renderCanvas {
+    display: none;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
+.menu {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.materials {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    height: 40px;
+}
+
+.toggle-menu {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: sans-serif;
+    border-radius: 25px;
+}
+
+.toggle-menu i {
+    pointer-events: none;
+}
+
+#materials-menu {
+    display: block;
+    width: 100%;
+}
+
+.list-materials {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.material {
+    display: flex;
+    flex-direction: row;
+    color: rgba(0, 0, 0, 0.7);
+    align-items: center;
+    height: 100%;
+}
+
+.object-container {
+    width: 40%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.mesh {
+    position: relative;
+    display: flex;
+    width: 60px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    margin-right: 30px;
+}
+
+.number {
+    position: absolute;
+    top: 5px;
+    right: -80%;
+    background: #fff;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    padding: 2px;
+}
+
+.name {
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 1.5em;
+    color: rgba(0, 0, 0, 0.7)
+}
+
+img {
+    width: 160px;
+    padding: 20px 0;
+    transition: 0.4s all;
+}
+
+.material-img {
+    width: 100px;
+}
+
+.material-img:hover {
+    transform: scale(1.2);
+}
+
+.info {
+    background: #fff;
+    color: rgba(0, 155, 255, 0.5);
+    text-transform: uppercase;
+    font-size: 0.8em;
+    padding: 10px;
+    border-radius: 25px;
+    border: 2px solid rgba(0, 155, 255, 0.5);
+}
+
+.remove {
+    background: #fff;
+    color: red;
+    border-radius: 25px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rotate {
+    display: flex;
+    flex-direction: row;
+    width: 10%;
+    text-align: center;
+    height: 100%;
+    text-transform: uppercase;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.textures {
+    width: 40%;
+    position: absolute;
+    display: flex;
+    height: auto;
+    top: 100px;
+    flex-direction: column;
+}
+
+.price {
+    display: flex;
+    width: 20%;
+    text-align: center;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+    flex-direction: column;
+}
+
+.price span {
+    margin: 1%;
+}
+
+.price .value {
+    background: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-style: italic;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.wood {
+    width: 30%;
+    text-align: center;
+    align-self: center;
+}
+
+.texture {
+    display: flex;
+    width: 20%;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+}
+
+.texture span {
+    height: 100%;
+    display: flex;
+    line-height: 40px;
+}
+
+.texture img {
+    height: 80px;
+    width: 100%;
+    padding: 0;
+}
+
+.type {
+    background: #fff;
+    transition: 0.4s border;
+    border: 2px solid transparent;
+    line-height: 20px;
+    font-size: 1em;
+    padding: 5px 10px;
+    border-radius: 10px;
+    outline-color: transparent;
+}
+
+.type:hover {
+    border: 2px solid;
+}
+
+.wood-type {
+    transition: 1s all;
+    height: 100px;
+    background: rgba(0, 0, 0, 0.4);
+    letter-spacing: 1px;
+    color: #fff;
+    padding: 10px;
+    display: none;
+}
+
+.wood-type img {
+    width: 70%;
+    height: 100%;
+    padding: 0;
+    filter: brightness(1.2);
+}
+
+.horizontal,
+.vertical {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 50px;
+}
+
+.vertical {
+    transform: rotate(90deg);
+}
+
+li {
+    list-style: none;
+}
+
+.top-menu {
+    display: none;
+}
+
+.lang {
+    background: none;
+    height: 32px;
+    width: 32px;
+    border: none;
+    filter: brightness(1.2);
+    outline-style: none;
+}
+
+.lang.pl {
+    background-image: url(img/lang/poland.png);
+}
+
+.lang.en {
+    background-image: url(img/lang/united-states.png);
+}
