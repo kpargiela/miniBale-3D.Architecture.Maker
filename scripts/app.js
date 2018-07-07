@@ -3,7 +3,9 @@
             var intro = document.querySelector('#intro');
             var app = document.querySelector('#app');
             var canvas = document.getElementById('renderCanvas');
-            var engine = new BABYLON.Engine(canvas, true, { stencil: true });
+            var engine = new BABYLON.Engine(canvas, true, {
+                stencil: true
+            });
 
             // function introHide() {
             intro.style.display = 'none';
@@ -210,14 +212,38 @@
                     });
                 }
 
-                var mergeBlocks = function() {
+                // var mergeBlocks = function() {
+                //     var addBtn = document.querySelector('.add-block');
+                //     addBtn.addEventListener('click', function() {
+                //         var mesh = BABYLON.Mesh.MergeMeshes(meshArr);       
+                //     }, false)
+                // }
+
+                // mergeBlocks();
+
+                var buildBlock = function () {
                     var addBtn = document.querySelector('.add-block');
-                    addBtn.addEventListener('click', function() {
-                        var mesh = BABYLON.Mesh.MergeMeshes(meshArr);       
+                    addBtn.addEventListener('click', function () {
+                        var block = new BABYLON.SolidParticleSystem("block", scene);
+                        for (let i = 0; i < meshArr.length; i++) {
+                            var particle = meshArr[i];
+                            var myBuilder = function (particle, i, s) {
+                                particle.position.x = s * 2;
+                                particle.color = new BABYLON.Color4(0.6, 0.6, 0.6, 1);
+                            }
+                            block.addShape(particle, meshArr.length, {
+                                positionFunction: myBuilder
+                            });
+                        }
+                        block.buildMesh();
+                        block.mesh.position.y = 1;
+                        block.mesh.material = oak;
+                        console.log(block);
                     }, false)
                 }
 
-                mergeBlocks();
+                buildBlock();
+
 
                 var chooseWood = function () {
                     var pickOak = document.querySelector('.oak img')
@@ -261,7 +287,7 @@
                     });
                 }
 
-                
+
 
                 editMesh();
                 chooseWood();
@@ -282,7 +308,7 @@
                 var bricks = [];
                 bricks.push(brick);
 
-            
+
 
 
                 // var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
@@ -390,11 +416,35 @@
                     });
                     if (pickInfo.hit) {
                         clicks += 1;
-                        if(clicks % 2 === 1) {
-                            currentMesh = pickInfo.pickedMesh;
+                        currentMesh = pickInfo.pickedMesh;
+                        
+                    var left = function (e) {
+                        if (e.keyCode == "38") {
+                            currentMesh.rotate(BABYLON.Axis.X, Math.PI / 2, BABYLON.Space.WORLD);
+                        }
+                    }
+
+                    var right = function (e) {
+                        if (e.keyCode == "37") {
+                            currentMesh.rotate(BABYLON.Axis.Z, Math.PI / 2, BABYLON.Space.WORLD);
+                        }
+                    }
+                    var up = function (e) {
+                        if (e.keyCode == "39") {
+                            currentMesh.rotate(BABYLON.Axis.Z, -(Math.PI / 2), BABYLON.Space.WORLD);
+                        }
+                    }
+                    var down = function (e) {
+                        if (e.keyCode == "40") {
+                            currentMesh.rotate(BABYLON.Axis.X, -(Math.PI / 2), BABYLON.Space.WORLD);
+                        }
+                    }
+
+                        if (clicks % 2 === 1) {
+                
                             // currentMesh.position.x += 1;
                             startingPoint = getGroundPosition(evt);
-    
+
                             if (startingPoint) { // we need to disconnect camera from canvas
                                 setTimeout(function () {
                                     camera.detachControl(canvas);
@@ -403,13 +453,20 @@
                             hl = new BABYLON.HighlightLayer("hl1", scene);
                             hl.addMesh(currentMesh, BABYLON.Color3.Red(), true);
                             hl.innerGlow = false;
+
+                            canvas.addEventListener("keyup", left, false);
+                            canvas.addEventListener("keyup", right, false);
+                            canvas.addEventListener("keyup", up, false);
+                            canvas.addEventListener("keyup", down, false);
                         } else {
                             camera.attachControl(canvas, true);
                             startingPoint = null;
                             hl.removeMesh(currentMesh);
+                            canvas.removeEventListener("keyup", left, false);
+                            canvas.removeEventListener("keyup", right, false);
+                            canvas.removeEventListener("keyup", up, false);
+                            canvas.removeEventListener("keyup", down, false);
                         }
-                    console.log(clicks);
-                        
                     }
                 }
 
@@ -417,8 +474,8 @@
                 //     if (event.key == "v") {
                 //         camera.attachControl(canvas, true);
                 //         startingPoint = null;
-              
-                            
+
+
 
                 //     }
                 //   });
@@ -432,7 +489,6 @@
                 // }
 
                 var onPointerMove = function (evt) {
-                    canvas.removeEventListener("pointerdown", onPointerDown);
                     if (!startingPoint) {
                         return;
                     }
@@ -445,7 +501,7 @@
 
                     var diff = current.subtract(startingPoint);
                     currentMesh.position.addInPlace(diff);
-                    
+
                     startingPoint = current;
 
                     // var pickInfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) {
@@ -459,7 +515,7 @@
                     // }                
                 }
 
-                
+
                 canvas.addEventListener("click", onPointerDown, false);
                 // canvas.addEventListener("pointerup", onPointerUp, false);
                 canvas.addEventListener("pointermove", onPointerMove, false);
@@ -470,6 +526,10 @@
                     canvas.removeEventListener("pointerdown", onPointerDown);
                     // canvas.removeEventListener("pointerup", onPointerUp);
                     canvas.removeEventListener("pointermove", onPointerMove);
+                    canvas.removeEventListener("keyup", left, false);
+                            canvas.removeEventListener("keyup", right, false);
+                            canvas.removeEventListener("keyup", up, false);
+                            canvas.removeEventListener("keyup", down, false);
                 }
 
                 return scene;
