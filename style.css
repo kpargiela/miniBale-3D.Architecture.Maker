@@ -22,7 +22,7 @@ body {
     display: flex;
     position: absolute;
     width: 100%;
-    height: 80px;
+    /*! height: 80px; */
     /* overflow: hidden; */
     /* background: rgba(255,255,255, .8); */
 }
@@ -39,32 +39,123 @@ body {
     width: 100%;
     height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: left;
+    margin: 1%;
+}
+
+.logo {
+    object-fit: cover;
+    height: 60px;
+    display: flex;
+    border-radius: 5px;
+    width: auto;
+    padding: 0;
 }
 
 .materials {
-    width: 100%;
+    width: 30%;
+    position: absolute;
+    height: 100%;
+    flex-wrap: wrap;
+    display: none;
+    flex-direction: row;
+    right: 5px;
+    align-content: flex-end;
+    bottom: 5px;
+}
+
+.materials-btn {
     position: absolute;
     bottom: 0;
+    height: 5vw;
+    width: 5vw;
+    background: transparent;
+    font-size: 2em;
+    border: none;
+    padding: 0;
+    justify-content: center;
+    right: 5px;
+}
+
+.material-container {
+    width: 100%;
+    justify-content: flex-end;
+    /*! background: rgba(255, 255, 255, 0.5); */
+    color: #333;
+    letter-spacing: 1px;
+    /*! height: 50%; */
+    flex-wrap: wrap;
+    display: flex;
+    align-content: center;
+    font-size: 1em;
+    margin: 5px;
+}
+
+/* .material-container.sets {
+    background: url('img/preview/materials/sets/makieta.jpg');
+    background-position: 0 0;
+    background-size: cover;
+    filter: opacity(0.7);
+    position: relative;
+}
+
+.material-container.sets>span {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 50px 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
     text-align: center;
-    height: 40px;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+} */
+
+.material-container span {
+    border-radius: 100px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    -ms-border-radius: 100px;
+    -o-border-radius: 100px;
+    width: 35%;
+    background: #fff;
+    padding: 60px;
+    text-align: center;
+    position: relative;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    cursor: pointer;
+}
+
+.materials span:before {
+    position: absolute;
+    width: 15%;
+    height: 30%;
+    background-color: rgba(0, 0, 100, 0.1);
+    content: "";
+    top: 35%;
+    left: 15%;
+    border-radius: 50px;
+}
+
+.materials .plants {
+    background-image: url(img/preview/materials/plants/tree.jpg);
+    background-size: 25%;
+    background-repeat: no-repeat;
+    background-position-x: right 15px;
+    background-position-y: center;
 }
 
 .toggle-menu {
     position: absolute;
-    right: 20px;
-    top: 20px;
-    width: 40px;
-    height: 40px;
-    background: rgba(0, 0, 0, 0.3);
-    display: flex;
+    top: 17vh;
+    right: 10px;
+    background: transparent;
+    font-size: 2em;
+    border: none;
+    padding: 0;
+    display: none;
     justify-content: center;
-    align-items: center;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-family: sans-serif;
-    border-radius: 25px;
 }
 
 .toggle-menu i {
@@ -72,8 +163,9 @@ body {
 }
 
 #materials-menu {
-    display: block;
+    display: none;
     width: 100%;
+    margin-left: 1%;
 }
 
 .list-materials {
@@ -81,6 +173,7 @@ body {
     padding: 0;
     height: 100%;
     background: rgba(255, 255, 255, 0.6);
+    border-radius: 50px;
 }
 
 .material {
@@ -135,6 +228,10 @@ img {
     width: 160px;
     padding: 20px 0;
     transition: 0.4s all;
+    -webkit-transition: 0.4s all;
+    -moz-transition: 0.4s all;
+    -ms-transition: 0.4s all;
+    -o-transition: 0.4s all;
 }
 
 .material-img {
@@ -188,7 +285,7 @@ img {
 
 .price {
     display: flex;
-    width: 20%;
+    width: 10%;
     text-align: center;
     justify-content: center;
     height: 100%;
@@ -206,6 +303,33 @@ img {
     border-radius: 20px;
     font-style: italic;
     box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 10%;
+    justify-content: center;
+}
+
+.controls>span {
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.controls .rotate-btn {
+    display: flex;
+    height: 30%;
+    justify-content: space-evenly;
+}
+
+.controls img {
+    height: 100%;
+    padding: 0;
+    width: auto;
 }
 
 .wood {
@@ -245,6 +369,10 @@ img {
     padding: 5px 10px;
     border-radius: 10px;
     outline-color: transparent;
+    -webkit-transition: 0.4s border;
+    -moz-transition: 0.4s border;
+    -ms-transition: 0.4s border;
+    -o-transition: 0.4s border;
 }
 
 .type:hover {
@@ -252,13 +380,17 @@ img {
 }
 
 .wood-type {
-    transition: 1s all;
     height: 100px;
     background: rgba(0, 0, 0, 0.4);
     letter-spacing: 1px;
     color: #fff;
     padding: 10px;
     display: none;
+    transition: 0.4s all;
+    -webkit-transition: 0.4s all;
+    -moz-transition: 0.4s all;
+    -ms-transition: 0.4s all;
+    -o-transition: 0.4s all;
 }
 
 .wood-type img {

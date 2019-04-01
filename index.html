@@ -12,8 +12,8 @@
     <!-- Link to the last version of BabylonJS loaders to enable loading filetypes such as .gltf -->
     <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
 
-    <script src="https://preview.babylonjs.com/materialsLibrary/babylon.gridMaterial.min.js"></script>
-    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="scripts/babylon.gridMaterial.min.js"></script>
+    <!-- <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script> -->
     <!-- Link to pep.js to ensure pointer events work consistently in all browsers -->
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
 </head>
@@ -24,16 +24,14 @@
         <h1>Zaprojektuj własną makietę z systemem miniBale i zamów materiały do zbudowania jej w rzeczywistości!</h1> -->
     </div>
     <div id="app">
-        <div class="top-menu">
-            <span class="top-view">Top</span>
-        </div>
         <div class="menu">
+            <img class="logo" src="img/logo-minibale-transparent.png" alt="">
             <div id="materials-menu">
                 <ul class="list-materials">
                     <li class="material">
                         <div class="object-container">
                             <div class="mesh">
-                                <span class="name">Block</span>
+                                <span class="name"></span>
                                 <i class="number">1</i>
                             </div>
                             <img class="material-img" src="img/preview/block.png" alt="">
@@ -41,10 +39,7 @@
                                 <i class="fas fa-minus"></i>
                             </span>
                         </div>
-                        <div class="rotate">
-                            <i class="fas fa-arrows-alt-v fa-lg rotate-btn horizontal"></i>
-                            <i class="fas fa-arrows-alt-v fa-lg rotate-btn vertical"></i>
-                        </div>
+                        <div class="add"><button>Add</button></div>
                         <div class="texture">
                             <button class="type">Type of wood</button>
 
@@ -67,18 +62,35 @@
                             <span>Price</span>
                             <span class="value">1 zł</span>
                         </div>
-                        <button class="lang pl"></button>
+                        <div class="controls">
+                            <span>Rotate horizontal</span>
+                            <div class="rotate-btn">
+                                <img src="img/controls/rotate/left.svg" alt="">
+                                <img src="img/controls/rotate/left2.svg" alt="">
+                                <img src="img/controls/rotate/right.svg" alt="">
+                                <img src="img/controls/rotate/right2.svg" alt="">
+                            </div>
+                        </div>
+                        <!-- <button class="lang pl"></button> -->
                     </li>
                 </ul>
             </div>
-            <span class="toggle-menu">
-                <i class="fas fa-times"></i>
-            </span>
         </div>
     </div>
     <div class="materials">
-        <span class="add-block">Block</span>
+        <!-- <div class="material-container sets"><span>Sets</span></div>
+        <div class="material-container"><span>Objects</span></div> -->
+        <div class="material-container"><span>Blocks</span></div>
+        <div class="material-container"><span>Ceramics</span></div>
+        <div class="material-container"><span>Tiles</span></div>
+        <div class="material-container"><span class="plants">Plants</span></div>
     </div>
+    <button class="materials-btn">
+        <i class="fas fa-grip-horizontal"></i>
+    </button>
+    <button class="toggle-menu">
+        <i class="fas fa-times"></i>
+    </button>
     <canvas id="renderCanvas"></canvas>
 
     <script src="scripts/app.js"></script>
