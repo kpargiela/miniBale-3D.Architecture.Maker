@@ -1,6 +1,5 @@
 window.addEventListener('DOMContentLoaded', function () {
 
-    var intro = document.querySelector('#intro');
     var app = document.querySelector('#app');
     var canvas = document.getElementById('renderCanvas');
     var engine = new BABYLON.Engine(canvas, true, {
@@ -8,7 +7,6 @@ window.addEventListener('DOMContentLoaded', function () {
     });
 
     // function introHide() {
-    intro.style.display = 'none';
     app.style.display = 'flex';
     canvas.style.display = 'block';
     engine.resize();
