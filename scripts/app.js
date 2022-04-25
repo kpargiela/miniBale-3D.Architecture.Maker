@@ -205,7 +205,25 @@ window.addEventListener('DOMContentLoaded', function () {
             mesh.width = 3;
             mesh.checkCollisions = true;
             meshArr[0] = mesh;
-            mesh.setEnabled(false);
+            // mesh.setEnabled(false);
+        });
+
+        var doniczka = BABYLON.SceneLoader.ImportMesh("", "", "meshes/doniczka_large.babylon", scene, function (meshes) {
+            var mesh = meshes[0];
+            block = meshes[0];
+            mesh.id = "mesh 1";
+            mesh.name = 'Doniczka'
+            mesh.position.y = 19;
+            mesh.position.z = 0;
+
+            mesh.scaling.x = 10;
+            mesh.scaling.y = 10;
+            mesh.scaling.z = 10;
+
+            mesh.width = 3;
+            mesh.checkCollisions = true;
+            meshArr[0] = mesh;
+            // mesh.setEnabled(false);
         });
 
 
