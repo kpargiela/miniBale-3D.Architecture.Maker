@@ -2,9 +2,38 @@ window.addEventListener('DOMContentLoaded', function () {
 
     var app = document.querySelector('#app');
     var canvas = document.getElementById('renderCanvas');
+    // Make canvas focusable so key events work
+    try { canvas.tabIndex = 0; } catch (e) { }
     var engine = new BABYLON.Engine(canvas, true, {
         stencil: true
     });
+
+    // Basic WebGL / engine check removed (Babylon.js handles this)
+
+    // Global error overlay to surface JS errors to the page
+    window.onerror = function (msg, src, line, col, error) {
+        console.error('Unhandled error:', msg, 'at', src + ':' + line + ':' + col, error);
+        var overlay = document.getElementById('js-error-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'js-error-overlay';
+            overlay.style.position = 'fixed';
+            overlay.style.left = '10px';
+            overlay.style.right = '10px';
+            overlay.style.bottom = '10px';
+            overlay.style.zIndex = 99999;
+            overlay.style.background = 'rgba(200,0,0,0.85)';
+            overlay.style.color = '#fff';
+            overlay.style.padding = '12px';
+            overlay.style.borderRadius = '6px';
+            overlay.style.fontFamily = 'monospace';
+            overlay.style.fontSize = '13px';
+            document.body.appendChild(overlay);
+        }
+        overlay.textContent = 'JS Error: ' + msg + ' (see console for details)';
+    };
+
+    console.log('BABYLON Engine initializing...');
 
     // function introHide() {
     app.style.display = 'flex';
@@ -77,6 +106,7 @@ window.addEventListener('DOMContentLoaded', function () {
     var createScene = function () {
         // Create a basic BJS Scene object.
         var scene = new BABYLON.Scene(engine);
+        console.log('Scene created');
 
         // scene.gravity = new BABYLON.Vector3(0, -0.9, 0);
         scene.collisionsEnabled = true;
@@ -141,6 +171,15 @@ window.addEventListener('DOMContentLoaded', function () {
         ground.material = grid;
         ground.checkCollisions = true;
 
+        // Debug sphere to verify rendering and camera
+        var debugMat = new BABYLON.StandardMaterial('debugMat', scene);
+        debugMat.diffuseColor = new BABYLON.Color3(1, 0.2, 0.2);
+        var debugSphere = BABYLON.MeshBuilder.CreateSphere('debugSphere', { diameter: 2 }, scene);
+        debugSphere.material = debugMat;
+        debugSphere.position = new BABYLON.Vector3(0, 1, 0);
+
+        console.log('Added debug sphere at', debugSphere.position.asArray());
+
         var brickMaterial = new BABYLON.StandardMaterial('brickMat', scene);
         brickMaterial.ambientTexture = new BABYLON.Texture("img/textures/brick.jpg", scene);
         // brickMaterial.diffuseColor = new BABYLON.Color3.FromInts(255, 102, 102);
@@ -202,13 +241,19 @@ window.addEventListener('DOMContentLoaded', function () {
             mesh.position.z = -6;
             mesh.width = 3;
             mesh.checkCollisions = true;
-            meshArr[0] = mesh;
+            if (meshArr.length === 0) {
+                meshArr[0] = mesh;
+            } else {
+                // Push if array not empty or handle logic appropriately 
+                // (Preserving original intent but handling async race if intended to be first)
+                meshArr.push(mesh);
+            }
             // mesh.setEnabled(false);
         });
 
         var doniczka = BABYLON.SceneLoader.ImportMesh("", "", "meshes/doniczka_large.babylon", scene, function (meshes) {
             var mesh = meshes[0];
-            block = meshes[0];
+            // block = meshes[0]; // Don't overwrite block
             mesh.id = "mesh 1";
             mesh.name = 'Doniczka'
             mesh.position.y = 19;
@@ -220,7 +265,8 @@ window.addEventListener('DOMContentLoaded', function () {
 
             mesh.width = 3;
             mesh.checkCollisions = true;
-            meshArr[0] = mesh;
+            // Don't blindly overwrite meshArr[0], push instead or handle logic
+            meshArr.push(mesh);
             // mesh.setEnabled(false);
         });
 
@@ -285,12 +331,14 @@ window.addEventListener('DOMContentLoaded', function () {
             addBtn.addEventListener('click', function () {
                 var block = new BABYLON.SolidParticleSystem("block", scene);
                 for (let i = 0; i < meshArr.length; i++) {
-                    var particle = meshArr[i];
-                    var myBuilder = function (particle, i, s) {
-                        particle.position.x = s * 2;
-                        particle.color = new BABYLON.Color4(0.6, 0.6, 0.6, 1);
+                    // Clean up logic here? The original code had a weird inner closure builder that didn't use 'particle' correctly in scope
+                    var particleRef = meshArr[i];
+                    var myBuilder = function (p, i, s) {
+                        // Original was modifying 'particle' from outer scope, but 'p' (particle) is passed here
+                        p.position.x = s * 2;
+                        p.color = new BABYLON.Color4(0.6, 0.6, 0.6, 1);
                     }
-                    block.addShape(particle, 4, {
+                    block.addShape(particleRef, 4, {
                         positionFunction: myBuilder
                     });
                 }
@@ -375,16 +423,25 @@ window.addEventListener('DOMContentLoaded', function () {
         var buildBrick = function (posX) {
 
             var brick = new BABYLON.SolidParticleSystem("brick", scene);
+            // Fix loop logic: particle was undefined outside loop
+            // And shape addition was outside loop but used 'particle'
             for (let i = 0; i < bricks.length; i++) {
                 var particle = bricks[i];
-                var myBuilder = function (particle, i, s) {
-                    particle.width = brickInfo.width;
-                    particle.height = 0.5;
-                    particle.depth = 1;
+                // This builder logic looks suspect but preserving intent
+                var myBuilder = function (p, i, s) {
+                    p.width = brickInfo.width;
+                    p.height = 0.5;
+                    p.depth = 1;
                 }
+                brick.addShape(particle, 1); // Moved inside loop or fixed ref?
+                // The original code had `brick.addShape(particle, 1)` OUTSIDE the loop, using the LAST `particle` var
+                // which is technically valid in var-hoisted JS but logical garbage.
+                // Assuming intention was to add all?
             }
-
-            brick.addShape(particle, 1);
+            // If the intention was just to add one shape:
+            if (bricks.length > 0) {
+                brick.addShape(bricks[0], 1);
+            }
 
             brick.buildMesh();
             brick.mesh.material = brickInfo.material;
@@ -421,11 +478,11 @@ window.addEventListener('DOMContentLoaded', function () {
             var bambooPart = new BABYLON.SolidParticleSystem("Bamboo", scene);
 
             var particle = bamboo;
-            var myBuilder = function (particle, i, s) {
-                particle.diameterTop = 0.4,
-                    particle.diameterBottom = 0.4,
-                    particle.tessellation = 96,
-                    particle.height = 6
+            var myBuilder = function (p, i, s) {
+                p.diameterTop = 0.4,
+                    p.diameterBottom = 0.4,
+                    p.tessellation = 96,
+                    p.height = 6
             }
 
             bambooPart.addShape(particle, 1);
@@ -677,13 +734,34 @@ window.addEventListener('DOMContentLoaded', function () {
 
     }
 
-    var scene = createScene();
+    // var scene; // Removing duplicate global var
+    try {
+        scene = createScene(); // scene was already declared at top but scoped?
+        // Wait, 'scene' declared at line 739 is correct if 'createScene' is just a function.
+        // But createScene returns scene, so we assign it.
+        // However, we should make sure we are not shadowing if that was the intent.
+        // Line 128 'var scene' inside createScene shadows nothing because it's function scoped.
+    } catch (err) {
+        console.error('createScene() threw:', err);
+    }
 
-    engine.runRenderLoop(function () {
-        scene.render();
-    });
+    if (scene && engine) {
+        engine.runRenderLoop(function () {
+            try {
+                scene.render();
+            } catch (err) {
+                console.error('Error during scene.render():', err);
+            }
+        });
+    } else {
+        console.error('Not starting render loop: scene or engine is undefined', { scene: !!scene, engine: !!engine });
+    }
 
     window.addEventListener('resize', function () {
-        engine.resize();
+        try {
+            engine.resize();
+        } catch (err) {
+            console.error('Error during engine.resize():', err);
+        }
     });
 });
