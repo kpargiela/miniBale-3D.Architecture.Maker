@@ -440,3 +440,72 @@ li {
 .lang.en {
     background-image: url(img/lang/united-states.png);
 }
+
+/* View Controls */
+.view-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    z-index: 100;
+}
+
+.view-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 30px;
+    padding: 12px 24px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.view-btn:hover {
+    background: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.view-btn:active {
+    transform: translateY(-1px);
+}
+
+.view-btn i {
+    font-size: 1.2em;
+    color: #007bff;
+}
+
+#generate-house {
+    background: #28a745;
+    color: white;
+}
+
+#generate-house i {
+    color: white;
+}
+
+#generate-house:hover {
+    background: #218838;
+}
+
+#clear-plan {
+    background: #dc3545;
+    color: white;
+}
+
+#clear-plan i {
+    color: white;
+}
+
+#clear-plan:hover {
+    background: #c82333;
+}
